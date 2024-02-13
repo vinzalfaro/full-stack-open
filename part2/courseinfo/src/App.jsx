@@ -14,8 +14,7 @@ const Part = (props) => {
 
 const Total = (props) => {
   const parts = props.course.parts
-  let sum = 0
-  parts.map(part => sum += part.exercises)
+  const sum = parts.reduce((accumulator, part) => accumulator + part.exercises, 0)
   console.log('total exercises', sum)
 
   return (
