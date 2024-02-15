@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
+import PersonForm from './components/PersonForm'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -12,7 +15,7 @@ const App = () => {
   const [filterText, setFilterText] = useState('')
   const [showAll, setShowAll] = useState(true)
 
-  const addContact = (event) => {
+  const addPerson = (event) => {
     event.preventDefault()
 
     const isDuplicate = persons.some(person => person.name === newName)
@@ -22,13 +25,13 @@ const App = () => {
       return
     }
 
-    const contactObject = {
+    const personObject = {
       id: persons.length + 1,
       name: newName,
       number: newNumber
     }
 
-    setPersons(persons.concat(contactObject))
+    setPersons(persons.concat(personObject))
     setNewName('')
     setNewNumber('')
   }
@@ -48,42 +51,26 @@ const App = () => {
     setShowAll(false)
   }
 
-  const contactsToShow = showAll
+  const personsToShow = showAll
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(filterText.toLowerCase()))
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with: <input 
-          value={filterText}
-          onChange={handleFilterChange}
-        />
-      </div>
+      <Filter 
+        value={filterText} 
+        onChange={handleFilterChange}/>
       <h2>Add new contact</h2>
-      <form onSubmit={addContact}>
-        <div>
-          name: <input 
-                value={newName}
-                onChange={handleNameChange}
-                />
-        </div>
-        <div>
-          number: <input 
-                value={newNumber}
-                onChange={handleNumberChange}
-                />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm 
+        onSubmit={addPerson} 
+        newName={newName} 
+        handleNameChange={handleNameChange} 
+        newNumber={newNumber} 
+        handleNumberChange={handleNumberChange}
+      />
       <h2>Numbers</h2>
-      <ul>
-        {contactsToShow.map(person =>
-          <li key={person.id}>{person.name} {person.number}</li>)}
-      </ul>
+      <Persons personsToShow={personsToShow}/>
     </div>
   )
 }
