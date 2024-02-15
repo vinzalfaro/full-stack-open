@@ -10,6 +10,14 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
+
+    const isDuplicate = persons.some(person => person.name === newName)
+
+    if (isDuplicate) {
+      alert(`${newName} is already added to phonebook`)
+      return
+    }
+
     const nameObject = {
       id: persons.length + 1,
       name: newName,
