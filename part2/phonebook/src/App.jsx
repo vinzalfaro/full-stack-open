@@ -24,27 +24,53 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-
-    const isDuplicate = persons.some(person => person.name === newName)
-
+  
+    const isDuplicate = persons.some((person) => person.name === newName)
+  
     if (isDuplicate) {
-      alert(`${newName} is already added to phonebook`)
+      const existingPerson = persons.find((person) => person.name === newName)
+      const confirmReplace = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      )
+  
+      if (confirmReplace) {
+        const changedPerson = { ...existingPerson, number: newNumber }
+  
+        personService
+          .update(existingPerson.id, changedPerson)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== existingPerson.id ? person : returnedPerson
+              )
+            )
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch((error) => {
+            console.error('Error updating person:', error)
+          })
+      }
       return
     }
-
+  
     const personObject = {
       name: newName,
-      number: newNumber
+      number: newNumber,
     }
-
+  
     personService
       .create(personObject)
-      .then(returnedPerson => {
+      .then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
       })
+      .catch((error) => {
+        console.error('Error adding person:', error)
+      })
   }
+  
 
   const handleNameChange = (event) => {
     console.log(event.target.value)
@@ -66,12 +92,12 @@ const App = () => {
     personService
       .remove(id)
       .then(() => {
-        setPersons(persons.filter(person => person.id !== id));
+        setPersons(persons.filter(person => person.id !== id))
       })
       .catch(error => {
-        console.error('Error deleting person:', error);
-      });
-  };
+        console.error('Error deleting person:', error)
+      })
+  }
 
   const personsToShow = showAll
     ? persons
