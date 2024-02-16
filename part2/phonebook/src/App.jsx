@@ -33,7 +33,6 @@ const App = () => {
     }
 
     const personObject = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber
     }
@@ -62,6 +61,18 @@ const App = () => {
     setShowAll(false)
   }
 
+  const deletePerson = (id) => {
+    console.log(id)
+    personService
+      .remove(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id));
+      })
+      .catch(error => {
+        console.error('Error deleting person:', error);
+      });
+  };
+
   const personsToShow = showAll
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(filterText.toLowerCase()))
@@ -81,7 +92,10 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow}/>
+      <Persons 
+        personsToShow={personsToShow}
+        onDelete={deletePerson} 
+      />
     </div>
   )
 }
