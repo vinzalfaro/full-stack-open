@@ -28,6 +28,16 @@ app.get('/', (request, response) => {
   response.send('<h1>Phonebook</h1>')
 })
 
+app.get('/info', (request, response) => {
+    const currentTime = new Date().toString()
+    const numberOfEntries = persons.length
+
+    const infoMessage = `<p>Phonebook has info for ${numberOfEntries} people</p>`
+    const timeMessage = `<p>${currentTime}</p>`
+  
+    response.send(infoMessage + timeMessage)
+  })
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
